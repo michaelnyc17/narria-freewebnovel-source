@@ -1,7 +1,7 @@
 var NovelSource = {
     baseUrl: "https://freewebnovel.com",
     
-    _cleanText: function(text) {
+    cleanText: function(text) {
         if (!text) return "";
         return text
             .replace(/<[^>]*>/g, '')
@@ -15,11 +15,11 @@ var NovelSource = {
             .trim();
     },
     
-    _buildUrl: function(path) {
-        if (!path) return this.baseUrl;
+    buildUrl: function(path) {
+        if (!path) return NovelSource.baseUrl;
         if (path.indexOf('http') === 0) return path;
-        if (path.charAt(0) === '/') return this.baseUrl + path;
-        return this.baseUrl + '/' + path;
+        if (path.charAt(0) === '/') return NovelSource.baseUrl + path;
+        return NovelSource.baseUrl + '/' + path;
     },
     
     getPopularNovels: function(page) {
@@ -27,7 +27,7 @@ var NovelSource = {
             log("=== getPopularNovels START ===");
             log("Page: " + page);
             
-            var url = this._buildUrl("/sort/latest-release");
+            var url = NovelSource.buildUrl("/sort/latest-release");
             log("Fetching URL: " + url);
             
             var response = fetch(url, {
@@ -89,7 +89,7 @@ var NovelSource = {
                     var titleEnd = html.indexOf('"', titleStart + 7);
                     if (titleEnd !== -1) {
                         title = html.substring(titleStart + 7, titleEnd);
-                        title = this._cleanText(title);
+                        title = NovelSource.cleanText(title);
                     }
                 }
                 
@@ -109,7 +109,7 @@ var NovelSource = {
                     if (imgEnd !== -1) {
                         coverUrl = context.substring(imgStart + 5, imgEnd);
                         if (coverUrl.indexOf('http') !== 0 && coverUrl.length > 0) {
-                            coverUrl = this._buildUrl(coverUrl);
+                            coverUrl = NovelSource.buildUrl(coverUrl);
                         }
                     }
                 }
@@ -150,7 +150,7 @@ var NovelSource = {
             log("=== searchNovels START ===");
             log("Query: " + query + ", Page: " + page);
             
-            var searchUrl = this._buildUrl("/search/" + encodeURIComponent(query));
+            var searchUrl = NovelSource.buildUrl("/search/" + encodeURIComponent(query));
             log("Search URL: " + searchUrl);
             
             var response = fetch(searchUrl, {
@@ -192,7 +192,7 @@ var NovelSource = {
                 if (titleStart !== -1 && titleStart < linkEnd + 200) {
                     var titleEnd = html.indexOf('"', titleStart + 7);
                     if (titleEnd !== -1) {
-                        title = this._cleanText(html.substring(titleStart + 7, titleEnd));
+                        title = NovelSource.cleanText(html.substring(titleStart + 7, titleEnd));
                     }
                 }
                 
@@ -226,7 +226,7 @@ var NovelSource = {
             log("=== getChapterList START ===");
             log("Novel ID: " + novelId);
             
-            var url = this._buildUrl("/novel/" + novelId);
+            var url = NovelSource.buildUrl("/novel/" + novelId);
             log("Fetching: " + url);
             
             var response = fetch(url, {
@@ -270,7 +270,7 @@ var NovelSource = {
                 if (titleStart !== -1 && titleStart < chapterLinkEnd + 100) {
                     var titleEnd = html.indexOf('"', titleStart + 7);
                     if (titleEnd !== -1) {
-                        chapterTitle = this._cleanText(html.substring(titleStart + 7, titleEnd));
+                        chapterTitle = NovelSource.cleanText(html.substring(titleStart + 7, titleEnd));
                     }
                 }
                 
@@ -312,7 +312,7 @@ var NovelSource = {
             log("=== getChapterContent START ===");
             log("Chapter ID: " + chapterId);
             
-            var url = this._buildUrl("/novel/" + chapterId);
+            var url = NovelSource.buildUrl("/novel/" + chapterId);
             log("Fetching: " + url);
             
             var response = fetch(url, {
@@ -354,7 +354,7 @@ var NovelSource = {
                     if (pEnd === -1) break;
                     
                     var pContent = html.substring(pStart + 3, pEnd);
-                    var cleanP = this._cleanText(pContent);
+                    var cleanP = NovelSource.cleanText(pContent);
                     
                     if (cleanP.length > 20) {
                         paragraphs.push('<p>' + cleanP + '</p>');
